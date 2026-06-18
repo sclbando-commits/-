@@ -99,6 +99,11 @@ tr:last-child td{border-bottom:none}
 
 <div class="thr"><i class="ti ti-coins"></i>高額しきい値：<input type="number" id="thr" value="15000" step="1000" min="0"> 円以上</div>
 
+<div style="margin-bottom:.75rem">
+  <button class="dl" onclick="loadSampleData()" style="background:#EEF2FF;border-color:#A5B4FC;color:#3730A3;font-size:13px;padding:7px 16px;display:inline-flex;align-items:center;gap:6px"><i class="ti ti-database"></i>サンプルデータを読み込む</button>
+  <span style="font-size:12px;color:var(--text2);margin-left:8px">← デモ用ダミーデータで動作確認できます</span>
+</div>
+
 <div class="upload-section">
   <div style="flex:1">
     <div class="up-label"><i class="ti ti-file-spreadsheet"></i>受注商品マスタ（必須）</div>
@@ -659,6 +664,101 @@ function processFile(file){
     }
   };
   rd.readAsArrayBuffer(file);
+}
+
+// =============================================
+// サンプルデータ読込
+// =============================================
+function loadSampleData(){
+  // ダミー注文データ（各支払い方法・各フラグパターンを網羅）
+  const sample=[
+    // ─── コンビニ後払い：要確認 ───
+    // 同一メアドで重複注文 + 非一般ドメイン
+    {order_id:'ORD-2025-0001',order_kbn:'WEB',order_payment_kbn:'K32',owner_name:'山田 太郎',owner_name_kana:'ヤマダ タロウ',owner_mail_addr:'taro@quickmail.biz',owner_zip:'150-0002',owner_addr1:'東京都',owner_addr2:'渋谷区',owner_addr3:'渋谷1-2-3',owner_tel1:'09012345000',shipping_name:'山田 太郎',shipping_zip:'150-0002',shipping_addr1:'東京都',shipping_addr2:'渋谷区',shipping_addr3:'渋谷1-2-3',order_price_subtotal:8200,order_count_order:1,product_name:'プレミアムセット',item_quantity:2,item_price:4100},
+    {order_id:'ORD-2025-0002',order_kbn:'WEB',order_payment_kbn:'K32',owner_name:'佐藤 花子',owner_name_kana:'サトウ ハナコ',owner_mail_addr:'taro@quickmail.biz',owner_zip:'220-0012',owner_addr1:'神奈川県',owner_addr2:'横浜市西区',owner_addr3:'みなとみらい2-5',owner_tel1:'08090001111',shipping_name:'佐藤 花子',shipping_zip:'220-0012',shipping_addr1:'神奈川県',shipping_addr2:'横浜市西区',shipping_addr3:'みなとみらい2-5',order_price_subtotal:12400,order_count_order:2,product_name:'スキンケアセット',item_quantity:3,item_price:4100},
+    // 配送先と請求先が不一致 + 高額
+    {order_id:'ORD-2025-0003',order_kbn:'WEB',order_payment_kbn:'K32',owner_name:'鈴木 一郎',owner_name_kana:'スズキ イチロウ',owner_mail_addr:'suzuki.ichiro@gmail.com',owner_zip:'100-0001',owner_addr1:'東京都',owner_addr2:'千代田区',owner_addr3:'千代田1-1',owner_tel1:'0334560000',shipping_name:'田中 次郎',shipping_zip:'060-0001',shipping_addr1:'北海道',shipping_addr2:'札幌市中央区',shipping_addr3:'北一条西2丁目',order_price_subtotal:22000,order_count_order:1,product_name:'高級腕時計',item_quantity:1,item_price:22000},
+    // 転送業者住所
+    {order_id:'ORD-2025-0004',order_kbn:'WEB',order_payment_kbn:'K32',owner_name:'ジョン スミス',owner_name_kana:'ジョン スミス',owner_mail_addr:'john.smith@yahoo.co.jp',owner_zip:'130-0001',owner_addr1:'東京都',owner_addr2:'墨田区',owner_addr3:'吾妻橋1-1',owner_tel1:'08011112222',shipping_name:'ジョン スミス',shipping_zip:'130-0001',shipping_addr1:'東京都',shipping_addr2:'墨田区',shipping_addr3:'転送コム 吾妻橋センター',order_price_subtotal:9800,order_count_order:1,product_name:'スマートウォッチ',item_quantity:1,item_price:9800},
+    // 同一商品5個以上
+    {order_id:'ORD-2025-0005',order_kbn:'WEB',order_payment_kbn:'K32',owner_name:'田中 三郎',owner_name_kana:'タナカ サブロウ',owner_mail_addr:'s.tanaka@icloud.com',owner_zip:'530-0001',owner_addr1:'大阪府',owner_addr2:'大阪市北区',owner_addr3:'梅田2-4-9',owner_tel1:'0666660001',shipping_name:'田中 三郎',shipping_zip:'530-0001',shipping_addr1:'大阪府',shipping_addr2:'大阪市北区',shipping_addr3:'梅田2-4-9',order_price_subtotal:19500,order_count_order:1,product_name:'美容液 30ml',item_quantity:5,item_price:3900},
+    // 同一商品5個以上（行分割パターン）
+    {order_id:'ORD-2025-0005',order_kbn:'WEB',order_payment_kbn:'K32',owner_name:'田中 三郎',owner_name_kana:'タナカ サブロウ',owner_mail_addr:'s.tanaka@icloud.com',owner_zip:'530-0001',owner_addr1:'大阪府',owner_addr2:'大阪市北区',owner_addr3:'梅田2-4-9',owner_tel1:'0666660001',shipping_name:'田中 三郎',shipping_zip:'530-0001',shipping_addr1:'大阪府',shipping_addr2:'大阪市北区',shipping_addr3:'梅田2-4-9',order_price_subtotal:19500,order_count_order:1,product_name:'クレンジング 120ml',item_quantity:2,item_price:2800},
+    // ─── コンビニ後払い：確認推奨 ───
+    // 非一般ドメインのみ
+    {order_id:'ORD-2025-0006',order_kbn:'WEB',order_payment_kbn:'K32',owner_name:'伊藤 美咲',owner_name_kana:'イトウ ミサキ',owner_mail_addr:'misaki@corporate-shop.co.jp',owner_zip:'460-0008',owner_addr1:'愛知県',owner_addr2:'名古屋市中区',owner_addr3:'栄3-15-33',owner_tel1:'0522220001',shipping_name:'伊藤 美咲',shipping_zip:'460-0008',shipping_addr1:'愛知県',shipping_addr2:'名古屋市中区',shipping_addr3:'栄3-15-33',order_price_subtotal:6800,order_count_order:3,product_name:'化粧水 150ml',item_quantity:1,item_price:6800},
+    // 高額のみ
+    {order_id:'ORD-2025-0007',order_kbn:'WEB',order_payment_kbn:'K32',owner_name:'渡辺 健太',owner_name_kana:'ワタナベ ケンタ',owner_mail_addr:'kenta.watanabe@gmail.com',owner_zip:'810-0001',owner_addr1:'福岡県',owner_addr2:'福岡市中央区',owner_addr3:'天神1-8-1',owner_tel1:'0928880001',shipping_name:'渡辺 健太',shipping_zip:'810-0001',shipping_addr1:'福岡県',shipping_addr2:'福岡市中央区',shipping_addr3:'天神1-8-1',order_price_subtotal:18000,order_count_order:2,product_name:'プレミアムキット',item_quantity:1,item_price:18000},
+    // ─── コンビニ後払い：問題なし ───
+    {order_id:'ORD-2025-0008',order_kbn:'WEB',order_payment_kbn:'K32',owner_name:'小林 奈々',owner_name_kana:'コバヤシ ナナ',owner_mail_addr:'n.kobayashi@yahoo.co.jp',owner_zip:'980-0021',owner_addr1:'宮城県',owner_addr2:'仙台市青葉区',owner_addr3:'中央1-3-1',owner_tel1:'0222220001',shipping_name:'小林 奈々',shipping_zip:'980-0021',shipping_addr1:'宮城県',shipping_addr2:'仙台市青葉区',shipping_addr3:'中央1-3-1',order_price_subtotal:4200,order_count_order:4,product_name:'スキンローション',item_quantity:1,item_price:4200},
+    {order_id:'ORD-2025-0009',order_kbn:'WEB',order_payment_kbn:'K32',owner_name:'加藤 誠',owner_name_kana:'カトウ マコト',owner_mail_addr:'makoto.kato@docomo.ne.jp',owner_zip:'060-0808',owner_addr1:'北海道',owner_addr2:'札幌市北区',owner_addr3:'北8条西3丁目',owner_tel1:'0118880001',shipping_name:'加藤 誠',shipping_zip:'060-0808',shipping_addr1:'北海道',shipping_addr2:'札幌市北区',shipping_addr3:'北8条西3丁目',order_price_subtotal:3300,order_count_order:1,product_name:'フェイスマスク 5枚入',item_quantity:2,item_price:1650},
+    // ─── コンビニ後払い：リピーター除外 ───
+    {order_id:'ORD-2025-0010',order_kbn:'WEB',order_payment_kbn:'K32',owner_name:'松本 さくら',owner_name_kana:'マツモト サクラ',owner_mail_addr:'sakura.m@gmail.com',owner_zip:'600-8216',owner_addr1:'京都府',owner_addr2:'京都市下京区',owner_addr3:'烏丸通塩小路',owner_tel1:'0753340001',shipping_name:'松本 さくら',shipping_zip:'600-8216',shipping_addr1:'京都府',shipping_addr2:'京都市下京区',shipping_addr3:'烏丸通塩小路',order_price_subtotal:5500,order_count_order:8,product_name:'定番クリーム',item_quantity:1,item_price:5500},
+    // ─── クレジットカード ───
+    // 要確認：使い捨てメアド
+    {order_id:'ORD-2025-0011',order_kbn:'WEB',order_payment_kbn:'K10',owner_name:'木村 拓也',owner_name_kana:'キムラ タクヤ',owner_mail_addr:'user12345@mailinator.com',owner_zip:'550-0013',owner_addr1:'大阪府',owner_addr2:'大阪市西区',owner_addr3:'新町1-4-5',owner_tel1:'0661110001',shipping_name:'木村 拓也',shipping_zip:'550-0013',shipping_addr1:'大阪府',shipping_addr2:'大阪市西区',shipping_addr3:'新町1-4-5',order_price_subtotal:7600,order_count_order:1,product_name:'美容クリーム',item_quantity:2,item_price:3800},
+    // 確認推奨：ランダム文字列メアド
+    {order_id:'ORD-2025-0012',order_kbn:'WEB',order_payment_kbn:'K10',owner_name:'中村 恵子',owner_name_kana:'ナカムラ ケイコ',owner_mail_addr:'xkqztmbvr@gmail.com',owner_zip:'231-0023',owner_addr1:'神奈川県',owner_addr2:'横浜市中区',owner_addr3:'山下町1',owner_tel1:'0455550001',shipping_name:'中村 恵子',shipping_zip:'231-0023',shipping_addr1:'神奈川県',shipping_addr2:'横浜市中区',shipping_addr3:'山下町1',order_price_subtotal:9200,order_count_order:2,product_name:'美白セット',item_quantity:1,item_price:9200},
+    // 問題なし
+    {order_id:'ORD-2025-0013',order_kbn:'WEB',order_payment_kbn:'K10',owner_name:'高橋 美穂',owner_name_kana:'タカハシ ミホ',owner_mail_addr:'miho.t@softbank.ne.jp',owner_zip:'160-0022',owner_addr1:'東京都',owner_addr2:'新宿区',owner_addr3:'新宿三丁目14',owner_tel1:'0339990001',shipping_name:'高橋 美穂',shipping_zip:'160-0022',shipping_addr1:'東京都',shipping_addr2:'新宿区',shipping_addr3:'新宿三丁目14',order_price_subtotal:5800,order_count_order:3,product_name:'日焼け止め SPF50',item_quantity:2,item_price:2900},
+    // ─── 代金引換 ───
+    {order_id:'ORD-2025-0014',order_kbn:'WEB',order_payment_kbn:'K20',owner_name:'吉田 龍一',owner_name_kana:'ヨシダ リュウイチ',owner_mail_addr:'ryuichi.y@outlook.com',owner_zip:'700-0907',owner_addr1:'岡山県',owner_addr2:'岡山市北区',owner_addr3:'下石井1-2-3',owner_tel1:'0862220001',shipping_name:'吉田 龍一',shipping_zip:'700-0907',shipping_addr1:'岡山県',shipping_addr2:'岡山市北区',shipping_addr3:'下石井1-2-3',order_price_subtotal:6500,order_count_order:1,product_name:'モイスチャーローション',item_quantity:1,item_price:6500},
+    // 代引 + 高額フラグ
+    {order_id:'ORD-2025-0015',order_kbn:'WEB',order_payment_kbn:'K20',owner_name:'林 由美',owner_name_kana:'ハヤシ ユミ',owner_mail_addr:'yumi.hayashi@nifty.com',owner_zip:'420-0031',owner_addr1:'静岡県',owner_addr2:'静岡市葵区',owner_addr3:'呉服町1-1',owner_tel1:'0542220001',shipping_name:'林 由美',shipping_zip:'420-0031',shipping_addr1:'静岡県',shipping_addr2:'静岡市葵区',shipping_addr3:'呉服町1-1',order_price_subtotal:24500,order_count_order:2,product_name:'プレミアムスキンケアセット',item_quantity:1,item_price:24500},
+    // ─── Amazonペイ ───
+    {order_id:'ORD-2025-0016',order_kbn:'WEB',order_payment_kbn:'K81',owner_name:'清水 康介',owner_name_kana:'シミズ コウスケ',owner_mail_addr:'kosuke.s@amazon.co.jp',owner_zip:'210-0007',owner_addr1:'神奈川県',owner_addr2:'川崎市川崎区',owner_addr3:'駅前本町1-1',owner_tel1:'0441110001',shipping_name:'清水 康介',shipping_zip:'210-0007',shipping_addr1:'神奈川県',shipping_addr2:'川崎市川崎区',shipping_addr3:'駅前本町1-1',order_price_subtotal:7200,order_count_order:4,product_name:'オールインワンジェル',item_quantity:1,item_price:7200},
+    {order_id:'ORD-2025-0017',order_kbn:'WEB',order_payment_kbn:'K81',owner_name:'山本 葵',owner_name_kana:'ヤマモト アオイ',owner_mail_addr:'aoi.yamamoto@me.com',owner_zip:'251-0042',owner_addr1:'神奈川県',owner_addr2:'藤沢市辻堂',owner_addr3:'元町1-1',owner_tel1:'0466660001',shipping_name:'山本 葵',shipping_zip:'251-0042',shipping_addr1:'神奈川県',shipping_addr2:'藤沢市辻堂',shipping_addr3:'元町1-1',order_price_subtotal:19800,order_count_order:1,product_name:'高機能美容液セット',item_quantity:1,item_price:19800},
+    // ─── 電話注文（除外対象） ───
+    {order_id:'ORD-2025-0018',order_kbn:'TEL',order_payment_kbn:'K32',owner_name:'横山 博',owner_name_kana:'ヨコヤマ ヒロシ',owner_mail_addr:'',owner_zip:'310-0015',owner_addr1:'茨城県',owner_addr2:'水戸市三の丸',owner_addr3:'1-1-1',owner_tel1:'0292220001',shipping_name:'横山 博',shipping_zip:'310-0015',shipping_addr1:'茨城県',shipping_addr2:'水戸市三の丸',shipping_addr3:'1-1-1',order_price_subtotal:4800,order_count_order:6,product_name:'定番ローション',item_quantity:1,item_price:4800},
+  ];
+
+  // processCSVRows相当の処理
+  const valid=sample.filter(r=>!isTEL(r['order_kbn']));
+  const map=new Map();
+  valid.forEach(r=>{
+    const oid=(r['order_id']||'').toString().trim();
+    if(!map.has(oid)){
+      map.set(oid,{
+        order_id:oid,
+        order_payment_kbn:(r['order_payment_kbn']||'').toString().trim(),
+        payment_name:'',
+        owner_name:(r['owner_name']||'').toString().trim(),
+        owner_name_kana:(r['owner_name_kana']||'').toString().trim(),
+        owner_mail_addr:(r['owner_mail_addr']||'').toString().trim(),
+        owner_zip:(r['owner_zip']||'').toString().trim(),
+        owner_addr1:(r['owner_addr1']||'').toString(),
+        owner_addr2:(r['owner_addr2']||'').toString(),
+        owner_addr3:(r['owner_addr3']||'').toString(),
+        owner_tel1:(r['owner_tel1']||'').toString().trim(),
+        shipping_name:(r['shipping_name']||'').toString().trim(),
+        shipping_name_kana:(r['shipping_name_kana']||'').toString().trim(),
+        shipping_zip:(r['shipping_zip']||'').toString().trim(),
+        shipping_addr1:(r['shipping_addr1']||'').toString(),
+        shipping_addr2:(r['shipping_addr2']||'').toString(),
+        shipping_addr3:(r['shipping_addr3']||'').toString(),
+        total:parseFloat(r['order_price_subtotal'])||0,
+        order_count_order:parseInt(r['order_count_order'])||0,
+        zip_ok:null,
+        items:[],
+      });
+    }
+    const o=map.get(oid);
+    const pname=(r['product_name']||'').toString().trim();
+    const qty=parseInt(r['item_quantity'])||1;
+    const price=parseFloat(r['item_price'])||0;
+    if(pname) o.items.push({name:pname,qty,price});
+  });
+  const PAY_NAMES={'K10':'クレジットカード','K20':'代金引換','K32':'コンビニ後払い','K81':'Amazon Pay'};
+  map.forEach(o=>{o.payment_name=PAY_NAMES[o.order_payment_kbn]||o.order_payment_kbn;});
+
+  orders=[...map.values()];
+  orders.forEach(o=>{o._a=analyze(o,orders);});
+  renderAll();
+  checkZipCodes();
+  document.getElementById('sg').style.display='grid';
+  document.getElementById('main').style.display='';
+  document.getElementById('empty0').style.display='none';
+  document.getElementById('fn1').textContent='サンプルデータ（ダミー）';
 }
 
 document.getElementById('fi1').addEventListener('change',e=>{if(e.target.files[0]){document.getElementById('fn1').textContent=e.target.files[0].name;processFile(e.target.files[0]);}});
